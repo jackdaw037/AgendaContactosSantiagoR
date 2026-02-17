@@ -3,79 +3,148 @@ import java.util.Scanner;
 
 public class Main {
 
-    static ArrayList<String> nombres = new ArrayList<>();
-    static ArrayList<String> telefonos = new ArrayList<>();
+    static ArrayList<Contacto> contactos = new ArrayList<>();
     static Scanner sc = new Scanner(System.in);
 
     public static void main(String[] args) {
 
         int menuOpcion;
-        boolean con = true;
+        boolean opcion = true;
 
-        while (con) {
+            while (opcion) {
 
-            System.out.println("1. Añadir contacto");
-            System.out.println("2. Mostrar contactos");
-            System.out.println("3. Buscar contactos");
-            System.out.println("4. Editar contacto");
-            System.out.println("0. Salir");
-            System.out.print("Seleccione una opcion: ");
+                System.out.println("\n1. Añadir contacto");
+                System.out.println("2. Mostrar contactos");
+                System.out.println("3. Buscar contacto");
+                System.out.println("4. Editar contacto");
+                System.out.println("0. Salir");
+                System.out.print("Seleccione una opcion: ");
 
-            menuOpcion = sc.nextInt();
-            sc.nextLine();
+                try {
+                    menuOpcion = sc.nextInt();
+                    sc.nextLine();
+                } catch (Exception e) {
+                    System.out.println("Debes de elegir una opcion numeriaca");
+                    sc.nextLine();
+                    continue;
+                }
 
-            switch (menuOpcion) {
 
-                case 1:
-                    agregarContacto();
-                    break;
+                switch (menuOpcion) {
 
-                case 2:
-                    mostrarContacto();
-                    break;
+                    case 1:
+                        agregarContacto();
+                        break;
 
-                case 3:
-                    System.out.println("Buscar contactos");
-                    break;
+                    case 2:
+                        mostrarContacto();
+                        break;
 
-                case 4:
-                    System.out.println("Editar contacto");
-                    break;
+                    case 3:
+                        buscarContacto();
+                        break;
 
-                case 0:
-                    System.out.println("Saliendo del programa...");
-                    con = false;
-                    break;
+                    case 4:
+                        editarContacto();
+                        break;
 
-                default:
-                    System.out.println("Opción inválida");
+                    case 0:
+                        System.out.println("Saliendo...");
+                        opcion = false;
+                        break;
+
+                    default:
+                        System.out.println("Opción inválida");
+                }
             }
-        }
     }
+
+
+    ///-- AGREGAR CONTACTO --
 
     static void agregarContacto() {
 
-        System.out.print("Inserte nombre: ");
-        String nuevoNombre = sc.nextLine();
+        System.out.print("Nombre: ");
+        String nombre = sc.nextLine();
 
-        System.out.print("Inserte telefono: ");
-        String nuevoTelefono = sc.nextLine();
+        System.out.print("Telefono: ");
+        String telefono = sc.nextLine();
 
-        nombres.add(nuevoNombre);
-        telefonos.add(nuevoTelefono);
+        System.out.print("Correo: ");
+        String correo = sc.nextLine();
 
-        System.out.println("El contacto se ha agregado correctamente");
+        Contacto nuevo = new Contacto(nombre, telefono, correo);
+        contactos.add(nuevo);
+
+        System.out.println("Contacto agregado correctamente.");
     }
 
+    ///--MOSTRAR CONTACTO--
+
     static void mostrarContacto() {
-        if (nombres.isEmpty()) {    
-            System.out.println("La agenda esta vacia");
+
+        if (contactos.isEmpty()) {
+            System.out.println("La agenda esta vaciaa");
             return;
         }
 
-        System.out.println("Lista de contactos:");
-        for (int i = 0; i < nombres.size(); i++) {
-            System.out.println((i + 1) + ". " + nombres.get(i) + " - " + telefonos.get(i));
+        for (int i = 0; i < contactos.size(); i++) {
+            Contacto contac = contactos.get(i);
+            System.out.println((i + 1) + ". " +
+                    contac.getNombre() + " --- " +
+                    contac.getTelefono() + " --- " +
+                    contac.getCorreo());
+        }
+    }
+
+    /// -- BUSCAR CONTACTO --
+
+
+    static void buscarContacto() {
+
+        System.out.print("Ingrese nombre a buscar: ");
+        String nombreBuscar = sc.nextLine();
+
+        for (Contacto c : contactos) {
+            if (c.getNombre().equalsIgnoreCase(nombreBuscar)) {
+                System.out.println("Encontrado:");
+                System.out.println(c.getNombre() + " - " +
+                        c.getTelefono() + " - " +
+                        c.getCorreo());
+                return;
+            }
+        }
+
+        System.out.println("Contcto no encontrado.");
+    }
+
+
+    /// -- EDITAR CONTACTO --
+
+    static void editarContacto() {
+
+        mostrarContacto();
+
+        if (contactos.isEmpty()) return;
+
+        System.out.print("Seleccione numero de contacto para editar: ");
+        int indice = sc.nextInt() - 1;
+        sc.nextLine();
+
+        if (indice >= 0 && indice < contactos.size()) {
+
+            Contacto cntNuevo = contactos.get(indice);
+
+            System.out.print("Nuevo telefono: ");
+            cntNuevo.setTelefono(sc.nextLine());
+
+            System.out.print("Nuevo correo: ");
+            cntNuevo.setCorreo(sc.nextLine());
+
+            System.out.println("Contacto actulizado.");
+
+        } else {
+            System.out.println("Indice invalido.");
         }
     }
 }
